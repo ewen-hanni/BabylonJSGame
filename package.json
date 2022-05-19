@@ -1,0 +1,15 @@
+{
+  "name": "daynight-babylonjs-master",
+  "version": "1.0.0",
+  "description": "To Play the game (You can find the game controls in the main menu): https://sapienzainteractivegraphicscourse.github.io/final-project-jeff/",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babylonjs/core": "^5.6.0",
+    "@babylonjs/procedural-textures": "^5.6.0"
+  }
+}
