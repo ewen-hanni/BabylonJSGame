@@ -1,3 +1,6 @@
+import Wave from "./Wave.js"; 
+import Salve from "./Salve.js"; 
+
 var canvas = document.getElementById("renderCanvas"); // Get the canvas element
 var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 var dashingD=false;
@@ -8,8 +11,11 @@ var dashingDIteration = 0 ;
 var dashingGIteration = 0 ;
 var nombreEnnemyR = 10 ;
 var gameOver = false;
-var salve = 1 ; var vagues = 100;
+var vagues = 1 ;
 
+var  salve1= new Salve (1,10);
+
+var Wave1 = new Wave (salve1,1,2,);
 	
 	// scene
     var falling = false ;
@@ -126,8 +132,7 @@ var createScene = function () {
 	lightImpostor.position.x = 1.2;
 	lightImpostor.parent = player;
 
-
-	for (var k = 1; k < vagues; k++) {
+	for (var k = 1; k < Wave1; k++) {
 	  for (var i = 1; i < nombreEnnemyR; i++) {
 
 		var ennemyMat = new BABYLON.StandardMaterial("pematE", scene);
@@ -149,14 +154,6 @@ var createScene = function () {
 		
 		ennemyMat.emissiveColor = BABYLON.Color3.FromHexString('#960018');
 		ennemyMat.specularPower = 128;
-
-
-		for (var k = 1; k < vagues; k++) {
-		if(salve==1){
-		// ne supporte pas le 0, compensé avec le i-1 
-			ennemy.position.x = player.position.x;ennemy.position.y = player.position.y+(i-1)*8  ;ennemy.position.z = player.position.z+(i*8)+50*k ;
-		}
-	}
 		
 		lightEnnemy.material = lightEnnemyMat;
 		lightEnnemyMat.emissiveColor = BABYLON.Color3.Red();
@@ -171,16 +168,25 @@ var createScene = function () {
 		lightEnnemy.ambientColor =  BABYLON.Color3.FromHexString('#960018');
 		
 		shadowGenerator.getShadowMap().renderList.push(ennemy);
-	
-	if(i==nombreEnnemyR-1){
-	//	salve++;
-	}
 
 	}
 }
 
-// ground
-	 
+for (var k = 1; k < vagues; k++) {
+	if(salve==1){
+		for(var l = 1; l < nombreEnnemyR; l++){
+		
+		// ne supporte pas le 0, compensé avec le i-1 
+		//initialisation des positions des ennemis
+			var ennemyName =  "ennemybodyR" + k ;
+			scene.getMeshByName(ennemyName).position.x = player.position.x;	scene.getMeshByName(ennemyName).position.y = player.position.y+(i-1)*8  ;	scene.getMeshByName(ennemyName).position.z = player.position.z+(i*8)+50*k ;
+			console.log("ennemy.position.x : " + ennemy.position.x + "ennemy.position.y : "+ ennemy.position.y+ "ennemy.position.z : "+ ennemy.position.z);
+		}
+	}
+salve++;
+}
+
+// ground	 
 	var ground = BABYLON.Mesh.CreatePlane("g", 1200, scene);
 	ground.position = new BABYLON.Vector3(0, 0, 0);
 	ground.rotation.x = Math.PI / 2;
@@ -208,19 +214,21 @@ var createScene = function () {
 	scene.registerBeforeRender(function () {
 
 
-		console.log("getMeshByName" +  scene.getMeshByName("ennemybodyR1" ));
-		console.log("getMeshByName2" +  scene.getMeshByName("ennemybodyR2").position);
 		for (var k = 1; k < vagues; k++) {
 		for (var j = 1; j < nombreEnnemyR; j++) {
 
+			//mouvement ennemis
+
 			scene.getMeshByName("ennemybodyR"+j).position.z--;
-			ennemy.position.z++;ennemy.position.x++;ennemy.position.y++;
-			console.log("x : "+	ennemy.position.x + " y : "+ennemy.position.y + " z : " + ennemy.position.z );
+			//ennemy.position.z++;ennemy.position.x++;ennemy.position.y++;
+			
+			//sortie d'écran 
+			if (scene.getMeshByName("ennemybodyR"+j).position.z<0){k++;}
 
 			//collisions 
 			if(	ennemy.position.x <=player.position.x +5 && ennemy.position.x >=player.position.x +5 && ennemy.positiony <=player.position.y +5 && ennemy.position.y >=player.position.y +5 && ennemy.position.z <=player.position.z +5 && ennemy.position.z >=player.position.z +5  ){
 				gameOver = true;
-				<script type="module"  src="../js/levels/gameOver.js"></script>
+				fetch("../js/levels/gameOver.js");
 			}
 		}
 	}
@@ -255,8 +263,6 @@ if(dashingDIteration==2){
 	//dashSpeed+=10;
 }
 
-
-
 	if(dashingGIteration==10){
 		console.log("dashigGIteration + " + dashingGIteration);
 		dashingG=false;dashSpeed=initialdashSpeed;
@@ -268,8 +274,6 @@ if(dashingDIteration==2){
 		dashingGAvailable=false;
 		//dashSpeed+=10;
 	}
-	
-	
 
 if(dashingD){
 	dashingG = false;
